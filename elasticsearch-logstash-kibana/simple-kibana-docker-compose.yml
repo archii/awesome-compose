@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  kibana:
+     image: kibana:7.8.0
+     environment:
+      ELASTICSEARCH_HOSTS: https://elasticsearch.int.example.com:9200
+     container_name: kibana
+     ports:
+       - "5601:5601"
