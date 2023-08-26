@@ -1,4 +1,11 @@
 ## Compose sample application
+
+### Use with Docker Development Environments
+
+You can open this sample in the Dev Environments feature of Docker Desktop version 4.12 or later.
+
+[Open in Docker Dev Environments <img src="../open_in_new.svg" alt="Open in Docker Dev Environments" align="top"/>](https://open.docker.com/dashboard/dev-envs?url=https://github.com/docker/awesome-compose/tree/master/nginx-flask-mysql)
+
 ### Python/Flask with Nginx proxy and MySQL database
 
 Project structure:
@@ -18,13 +25,15 @@ Project structure:
 ```
 services:
   backend:
-    build: backend
+    build:
+      context: backend
+      target: builder
     ...
   db:
     # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10.6.4-focal
+    image: mariadb:10-focal
     # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8.0.27
+    #image: mysql:8
     ...
   proxy:
     build: proxy
@@ -37,7 +46,7 @@ Make sure port 80 on the host is not already being in use.
 > ℹ️ **_INFO_**  
 > For compatibility purpose between `AMD64` and `ARM64` architecture, we use a MariaDB as database instead of MySQL.  
 > You still can use the MySQL image by uncommenting the following line in the Compose file   
-> `#image: mysql:8.0.27`
+> `#image: mysql:8`
 
 ## Deploy with docker compose
 
@@ -56,15 +65,13 @@ Creating nginx-flask-mysql_proxy_1   ... done
 
 ## Expected result
 
-Listing containers must show three containers running and the port mapping as below:
+Listing containers should show three containers running and the port mapping as below:
 ```
-$ docker ps
-CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                    NAMES
-c2c703b66b19        nginx-flask-mysql_proxy     "nginx -g 'daemon of…"   39 seconds ago      Up 38 seconds       0.0.0.0:80->80/tcp     nginx-flask-mysql_proxy_1
-2b8a21508c3c        nginx-flask-mysql_backend   "/bin/sh -c 'flask r…"   9 minutes ago       Up 38 seconds       0.0.0.0:5000->5000/tcp   nginx-flask-mysql_backend_1
-0e6a96ea2028        mysql:8.0.19                "docker-entrypoint.s…"   9 minutes ago       Up 38 seconds       3306/tcp, 33060/tcp      nginx-flask-mysql_db_1
-
-
+$ docker compose ps
+NAME                          COMMAND                  SERVICE             STATUS              PORTS
+nginx-flask-mysql-backend-1   "flask run"              backend             running             0.0.0.0:8000->8000/tcp
+nginx-flask-mysql-db-1        "docker-entrypoint.s…"   db                  running (healthy)   3306/tcp, 33060/tcp
+nginx-flask-mysql-proxy-1     "nginx -g 'daemon of…"   proxy               running             0.0.0.0:80->80/tcp
 ```
 
 After the application starts, navigate to `http://localhost:80` in your web browser or run:

@@ -1,6 +1,8 @@
 services:
   web:
-    build: angular
+    build:
+      context: angular
+      target: builder
     ports:
       - 4200:4200
     volumes:

@@ -1,6 +1,8 @@
 services:
   web:
-    build: vuejs
+    build:
+      context: vuejs
+      target: development
     ports:
       - 8080:8080
     volumes:

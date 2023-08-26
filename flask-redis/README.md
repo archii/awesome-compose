@@ -1,5 +1,11 @@
 ## Compose sample application
 
+### Use with Docker Development Environments
+
+You can open this sample in the Dev Environments feature of Docker Desktop version 4.12 or later.
+
+[Open in Docker Dev Environments <img src="../open_in_new.svg" alt="Open in Docker Dev Environments" align="top"/>](https://open.docker.com/dashboard/dev-envs?url=https://github.com/docker/awesome-compose/tree/master/flask-redis)
+
 ### Python/Flask application using a Redis database
 
 Project structure:
@@ -24,7 +30,7 @@ services:
    web:
         build: .
         ports:
-            - "5000:5000"
+            - "8000:8000"
         volumes:
             - .:/code
         depends_on:
@@ -55,12 +61,12 @@ Listing containers must show one container running and the port mapping as below
 $ docker compose ps
 NAME                  COMMAND                  SERVICE             STATUS              PORTS
 flask-redis-redis-1   "redis-server --load…"   redis               running             0.0.0.0:6379->6379/tcp
-flask-redis-web-1     "/bin/sh -c 'python …"   web                 running             0.0.0.0:5000->5000/tcp
+flask-redis-web-1     "/bin/sh -c 'python …"   web                 running             0.0.0.0:8000->8000/tcp
 ```
 
-After the application starts, navigate to `http://localhost:5000` in your web browser or run:
+After the application starts, navigate to `http://localhost:8000` in your web browser or run:
 ```
-$ curl localhost:5000
+$ curl localhost:8000
 This webpage has been viewed 2 time(s)
 ```
 

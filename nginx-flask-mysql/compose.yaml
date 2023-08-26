@@ -1,13 +1,13 @@
 services:
   db:
     # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10.6.4-focal
+    image: mariadb:10-focal
     # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8.0.27
+    #image: mysql:8
     command: '--default-authentication-plugin=mysql_native_password'
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db-password)" --silent']
       interval: 3s
       retries: 5
       start_period: 30s
@@ -23,19 +23,23 @@ services:
     expose:
       - 3306
       - 33060
+
   backend:
-    build: backend
+    build:
+      context: backend
+      target: builder
     restart: always
     secrets:
       - db-password
     ports:
-      - 5000:5000
+      - 8000:8000
     networks:
       - backnet
       - frontnet
     depends_on:
       db:
         condition: service_healthy
+
   proxy:
     build: proxy
     restart: always
@@ -45,11 +49,14 @@ services:
       - backend
     networks:
       - frontnet
+
 volumes:
   db-data:
+
 secrets:
   db-password:
     file: db/password.txt
+
 networks:
   backnet:
   frontnet:
